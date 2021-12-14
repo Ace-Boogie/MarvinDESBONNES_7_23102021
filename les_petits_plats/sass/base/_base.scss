@@ -1,0 +1,337 @@
+* {
+  box-sizing: border-box;
+  font-family: 'Lato', sans-serif;
+  //margin: 0 auto;
+  //text-align: center;
+}
+
+body {
+  padding: 0;
+  margin: 0 auto;
+  width: 90%;
+}
+
+#header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+#app {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin: 0;
+
+  > article {
+    background-color: #E7E7E7;
+    border-radius: 0.3125rem;
+    height: auto;
+    //margin-bottom: 2.5rem;
+    margin: 1.5rem;
+    overflow: hidden;
+    position: relative;
+    text-overflow: ellipsis;
+    width: 24rem;
+
+    > img {
+      height: 18.125rem;
+      width: 23.75rem;
+      background: white;
+      object-fit: contain;
+      //background-image: url("./img/logo-les-petits-plats.png");
+      background-repeat: no-repeat;
+    }
+
+    > .card-body-title {
+      align-items: center;
+      background-color: #E7E7E7;
+      display: flex;
+      justify-content: space-between;
+      margin-left: 1rem;
+      margin-right: 1rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      > .card-title {
+        //font-size: 1.2rem;
+        //font-weight: 700;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 18px;
+        line-height: 22px;
+      }
+
+      > .card-duration {
+        //font-size: 1.2rem;
+        //font-weight: 700;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 18px;
+        line-height: 22px;
+
+        &:before {
+          margin-right: 0.3rem;
+          content: "\f017";
+          font-family: "Font Awesome 5 Free", serif;
+          font-weight: 400;
+        }
+      }
+    }
+
+    > .card-body-info {
+      display: flex;
+      margin-left: 1rem;
+      margin-right: 1rem;
+
+      > .card-body-ingredients {
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 7;
+        display: -webkit-box;
+        font-size: .8rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 50%;
+
+        > p {
+          //font-size: .8rem;
+          font-style: normal;
+          font-weight: bold;
+          font-size: 12px;
+          line-height: 14px;
+          margin: 0.125rem 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+
+      > .card-body-preparation {
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 7;
+        display: -webkit-box;
+        font-size: .8rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 50%;
+
+        > p {
+          text-overflow: ellipsis;
+          font-family: 'Roboto', sans-serif;
+          font-style: normal;
+          font-weight: normal;
+          font-size: 12px;
+          line-height: 100%;
+          overflow: hidden;
+        }
+      }
+    }
+  }
+}
+
+
+#divFilter {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin: 1rem auto;
+  padding: 0;
+  width: 95%;
+  
+  @media screen and (min-width: 900px) {
+    flex-direction: row;
+  }
+}
+
+.tagIngredient, .tagAppareil, .tagUstensile {
+  align-items: center;
+  border-radius: 0.25rem;
+  color: #fff;
+  cursor: default;
+  display: none;
+  justify-content: space-between;
+  margin: 0.5rem 1rem 0.25rem 0;
+  padding: 0.5rem 1rem;
+  width: fit-content;
+
+  &::after {
+    margin-left: 0.6rem;
+    content: "\f057";
+    font-family: "Font Awesome 5 Free", serif;
+    font-weight: 400;
+  }
+}
+
+.btn-searchIngredient, .btn-searchAppareil, .btn-searchUstensile {
+  align-items: center;
+  border: none;
+  border-radius: 0.3125rem;
+  color: #ffff;
+  cursor: pointer;
+  display: flex;
+  font-size: 1.125rem;
+  height: 4.3125rem;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  transition: linear .3s;
+  width: 11rem;
+  margin-right: 2rem;
+
+  &::after{
+    margin-left: 0.6rem;
+    content: "\f078";
+    font-family: "Font Awesome 5 Free", serif;
+    font-weight: 900;
+  }
+}
+
+.resultIngredient, .resultAppareil, .resultUstensile {
+  top: 20rem;
+  display: none;
+  border-radius: 5px;
+  color: #ffff;
+  position: absolute;
+  width: 35rem;
+  transition: linear 0.5s;
+  z-index: 10;
+}
+
+#searchIngredient, #searchAppareil, #searchUstensile {
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  height: 4.3125rem;
+  outline: none;
+  padding: 2rem;
+  width: 100%;
+}
+
+#closeIngredientsFilter, #closeAppareilsFilter, #closeUstensilesFilter {
+  font-size: 1.125rem;
+  left: 32rem;
+  position: absolute;
+  top: 1.4rem;
+  font-family: "Font Awesome 5 Free", serif;
+  font-weight: 900;
+}
+
+/* Input ingredients, appareils, ustensiles */
+
+.tagShow {
+  display: flex;
+  height: 3.5rem;
+}
+
+.active-input-div {
+  border-radius: 5px;
+  color: #ffff;
+  position: absolute;
+  overflow: auto;
+  height: 20rem;
+  top: 4.1rem;
+  width: 35rem;
+  z-index: 10;
+}
+
+.ulList {
+  display: flex;
+  flex-wrap: wrap;
+  height: fit-content;
+  justify-content: flex-start;
+  list-style: none;
+  padding: .5rem;
+}
+.liList {
+  font-size: 1.21rem;
+  overflow: hidden;
+  padding: .5rem 1rem;
+  text-align: start;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 9rem;
+}
+
+#btn-searchIngredient, #searchIngredient{
+  background-color: #3282F7;
+}
+#resultIngredient {
+  //display: none;
+  transition: linear 0.3s;
+  >.active-input-div {
+    background-color: #3282F7;
+  }
+}
+
+#searchIngredientautocomplete-list {
+  text-align: center;
+  color: white;
+  background-color: #3282F7;
+  border-radius: 5px;
+}
+
+#tagIngredient {
+  background-color: #3282F7;
+}
+
+#btn-searchAppareil, #searchAppareil{
+  background-color: #68D9A4;
+}
+
+#resultAppareil {
+  //display: none;
+  >.active-input-div {
+    background-color: #68D9A4;
+  }
+}
+
+#searchAppareilautocomplete-list {
+  text-align: center;
+  color: white;
+  background-color: #68D9A4;
+  border-radius: 5px;
+}
+
+#tagAppareil {
+  background-color: #68D9A4;
+}
+
+#btn-searchUstensile, #searchUstensile{
+  background-color: #ED6454;
+}
+
+#resultUstensile {
+  //display: none;
+  > .active-input-div {
+    background-color: #ED6454;
+  }
+}
+
+#searchUstensileautocomplete-list {
+  text-align: center;
+  color: white;
+  background-color: #ED6454;
+  border-radius: 5px;
+}
+
+#tagUstensile {
+  background-color: #ED6454;
+}
+
+.btn-actived{
+  width: 35rem;
+}
+.searchInput-actived{
+  display: flex;;
+}
+.divResult-actived{
+  display: flex;
+}
+.tag-actived {
+  display: flex;
+}
