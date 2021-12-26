@@ -1,5 +1,12 @@
 import '../sass/main.scss';
 import recipe from "./utilities/recipes.js";
+import Recette from "./recette.js";
+import SearchPrimary from "./searchPrimary";
+import SearchSecondary from "./searchSecondary";
+
+const main = document.querySelector('#app');
+const recette = recipe;
+const searchSecondary = new SearchSecondary();
 
 document.querySelector("#nav").innerHTML = `
 <div class="input-group flex-nowrap">
@@ -60,7 +67,6 @@ document.querySelector("#nav").innerHTML = `
     </div>
 </div>
 `
-const main = document.querySelector('#app');
 
 /* Ingredients html */
 const btnIngredient = document.querySelector("#btn-searchIngredient");
@@ -83,7 +89,6 @@ const searchUstensile = document.getElementById("searchUstensile");
 const resultUstensile = document.getElementById("resultUstensile");
 const tagUstensile = document.getElementById("tagUstensile");
 
-const recette = recipe;
 
 /* Récupation des datas pour les inputs annexes */
 
@@ -99,112 +104,18 @@ recette.map((type) => {
 })
 const resultRes = Object.entries(res).map(([id, set]) => [id, [...set]]);
 
-class Recette {
-    constructor(rawData, targetNode) {
-        this.rawData = rawData;
-        this.targetNode = targetNode;
+btnIngredient.addEventListener("click", function (e) {
+    searchSecondary.checkBtnActived(btnIngredient,resultIngredient,searchIngredient, resultRes[0][1].sort(), tagIngredient);
+})
 
-        this.init();
-    }
+btnAppareil.addEventListener("click", function (e) {
+    searchSecondary.checkBtnActived(btnAppareil,resultAppareil,searchAppareil, resultRes[1][1].sort(), tagAppareil);
+})
 
-    init() {
-        this.buildContainAll();
-        this.buildImageRecette();
-        this.buildContentRecette();
-        this.buildNameAndTimeRecette();
-        this.buildIngredientAndDescritionRecette();
+btnUstensile.addEventListener("click", function (e) {
+    searchSecondary.checkBtnActived(btnUstensile,resultUstensile,searchUstensile, resultRes[2][1].sort(), tagUstensile);
+})
 
-        if (this.targetNode) {
-            this.append(this.targetNode);
-        }
-    }
-
-    buildContainAll() {
-        this.articleContain = document.createElement("article");
-        this.articleContain.classList.add("card");
-        this.articleContain.tabIndex = 0;
-        this.articleContain.id = this.rawData.id;
-    }
-
-    buildImageRecette() {
-        this.image = document.createElement("img");
-        this.image.classList.add("card-img-top")
-        this.image.src = "../img/logo-les-petits-plats.png"
-        this.image.alt = this.rawData.name;
-    }
-
-    buildContentRecette() {
-        this.divContentRecette = document.createElement("div");
-        this.divContentRecette.classList.add("card-body")
-        this.divContentRecette.style.display = "flex";
-        this.divContentRecette.style.flexDirection = "column"
-    }
-
-    buildNameAndTimeRecette() {
-        this.divNameAndTime = document.createElement("div");
-        this.divNameAndTime.classList.add("card-body-title");
-        // this.divNameAndTime.style.display = "flex";
-        // this.divNameAndTime.style.justifyContent = "space-between";
-        /* Nom de la recette */
-        this.nameRecette = document.createElement("h4");
-        this.nameRecette.classList.add("card-title");
-        this.nameRecette.textContent = this.rawData.name;
-
-        /* Temps de préparation de la recette */
-        this.timeForPrepartion = document.createElement("span");
-        this.timeForPrepartion.classList.add("card-duration");
-        this.timeForPrepartion.innerHTML = this.rawData.time + " minutes";
-
-    }
-
-    buildIngredientAndDescritionRecette() {
-        this.divIngredientsAndDescription = document.createElement("div");
-        this.divIngredientsAndDescription.classList.add("card-body-info");
-
-        /* Ingredients */
-        this.divIngredients = document.createElement("div");
-        this.divIngredients.classList.add("card-body-ingredients");
-        this.rawData.ingredients.map((element) => {
-            this.ingredient = document.createElement("p");
-            if (element.unit) {
-                this.ingredient.textContent = element.ingredient + " : " +
-                    element.quantity + " " + element.unit;
-                this.divIngredients.append(this.ingredient);
-            } else if (element.quantity) {
-                this.ingredient.textContent = element.ingredient + " : " +
-                    element.quantity;
-                this.divIngredients.append(this.ingredient);
-            } else {
-                this.ingredient.textContent = element.ingredient;
-                this.divIngredients.append(this.ingredient);
-            }
-
-
-        }).join("")
-
-        /* Description de la recette */
-        this.divDescription = document.createElement("div");
-        this.divDescription.classList.add("card-body-preparation");
-        this.description = document.createElement("p");
-        this.description.textContent = this.rawData.description;
-    }
-
-    append(domNode) {
-        this.articleContain.append(this.image);
-        // this.articleContain.append(this.divContentRecette);
-
-        this.divNameAndTime.append(this.nameRecette);
-        this.divNameAndTime.append(this.timeForPrepartion);
-        this.articleContain.append(this.divNameAndTime);
-
-        this.divIngredientsAndDescription.append(this.divIngredients);
-        this.divDescription.append(this.description);
-        this.divIngredientsAndDescription.append(this.divDescription);
-        this.articleContain.append(this.divIngredientsAndDescription);
-
-        domNode.append(this.articleContain);
-    }
-}
 
 
 // function autocomplete(inp, arr, tag) {
@@ -337,102 +248,185 @@ class Recette {
 // autocomplete(document.getElementById("searchIngredient"), resultRes[0][1].sort(), document.getElementById("tagIngredient"));
 // autocomplete(document.getElementById("searchAppareil"), resultRes[1][1].sort(), document.getElementById("tagAppareil"));
 // autocomplete(document.getElementById("searchUstensile"), resultRes[2][1].sort(), document.getElementById("tagUstensil"));
-
-const clickType = (btn, inp, arr, divResult, tag, closeFilter) => {
-
-    btn.addEventListener("click", function (e) {
-        if (btnIngredient.classList.contains("btn-actived")) {
-            btnIngredient.classList.toggle("btn-actived");
-            resultIngredient.classList.toggle("divResult-actived");
-            searchIngredient.classList.toggle("searchInput-actived");
-        }
-        if (btnAppareil.classList.contains("btn-actived")) {
-            btnAppareil.classList.toggle("btn-actived");
-            resultAppareil.classList.toggle("divResult-actived");
-            searchAppareil.classList.toggle("searchInput-actived");
-        }
-        if (btnUstensile.classList.contains("btn-actived")) {
-            btnUstensile.classList.toggle("btn-actived");
-            resultUstensile.classList.toggle("divResult-actived");
-            searchUstensile.classList.toggle("searchInput-actived");
-        }
-        btn.classList.toggle("btn-actived");
-        divResult.classList.toggle("divResult-actived");
-        inp.classList.toggle("searchInput-actived");
-        const divList = document.createElement("div");
-        divList.classList.add("active-input-div");
-        const ulList = document.createElement("ul");
-        ulList.classList.add("ulList");
-        divResult.appendChild(divList);
-        divList.appendChild(ulList);
-
-        arr.map((type) => {
-            const liList = document.createElement("li");
-            liList.classList.add("liList");
-            liList.textContent = type;
-            ulList.appendChild(liList);
-            console.log(type);
-
-            liList.addEventListener("click", function (e) {
-                /*insert the value for the autocomplete text field:*/
-                divResult.removeChild(divList);
-                main.innerHTML = "";
-                inp.value = "";
-                inp.value = e.target.textContent;
-                tag.textContent = e.target.textContent;
-                tag.classList.add("tag-actived");
-                btn.classList.toggle("btn-actived");
-                divResult.classList.toggle("divResult-actived");
-                inp.classList.toggle("searchInput-actived");
-
-                tagClose(tag, inp, btn);
-
-                if (inp.id === "searchIngredient") {
-                    searchIngredients(inp);
-                }
-                if (inp.id === "searchAppareil") {
-                    searchAppareils(inp);
-                }
-                if (inp.id === "searchUstensile") {
-                    searchUstensiles(inp);
-                }
-
-
-            })
-        })
-
-    })
-
-    closeFilter.addEventListener("click", (e) => {
-        closeSearch(closeFilter, btn, divResult);
-    })
-
-}
-const searchIngredients = (inp) => {
-    recette.filter((type) => {
-        type.ingredients.map((ingredients) => {
-            if (ingredients.ingredient.includes(inp.value)) {
-                new Recette(type, main);
-            }
-        })
-    })
-}
-const searchAppareils = (inp) => {
-    recette.filter((type) => {
-        if (type.appliance.includes(inp.value)) {
-            new Recette(type, main);
-        }
-    })
-}
-const searchUstensiles = (inp) => {
-    recette.filter((type) => {
-        type.ustensils.map((ustensil) => {
-            if (ustensil.includes(inp.value)) {
-                new Recette(type, main);
-            }
-        })
-    })
-}
+// let getAllOptions = [];
+// new SearchSecondary().clickBtn(btnIngredient, searchIngredient,resultRes[0][1].sort(), resultIngredient, tagIngredient, closeIngredientsFilter, main);
+// new SearchSecondary().clickBtn(btnAppareil, searchAppareil, resultRes[1][1].sort(), resultAppareil, tagAppareil, closeAppareilsFilter, main);
+// new SearchSecondary().clickBtn(btnUstensile, searchUstensile, resultRes[2][1].sort(), resultUstensile, tagUstensile, closeUstensilesFilter, main);
+// const clickType = (btn, inp, arr, divResult, tag, closeFilter) => {
+//
+//     btn.addEventListener("click", function (e) {
+//         if (btnIngredient.classList.contains("btn-actived")) {
+//             btnIngredient.classList.toggle("btn-actived");
+//             resultIngredient.classList.toggle("divResult-actived");
+//             searchIngredient.classList.toggle("searchInput-actived");
+//         }
+//         if (btnAppareil.classList.contains("btn-actived")) {
+//             btnAppareil.classList.toggle("btn-actived");
+//             resultAppareil.classList.toggle("divResult-actived");
+//             searchAppareil.classList.toggle("searchInput-actived");
+//         }
+//         if (btnUstensile.classList.contains("btn-actived")) {
+//             btnUstensile.classList.toggle("btn-actived");
+//             resultUstensile.classList.toggle("divResult-actived");
+//             searchUstensile.classList.toggle("searchInput-actived");
+//         }
+//         btn.classList.toggle("btn-actived");
+//         divResult.classList.toggle("divResult-actived");
+//         inp.classList.toggle("searchInput-actived");
+//         const divList = document.createElement("div");
+//         divList.classList.add("active-input-div");
+//         const ulList = document.createElement("ul");
+//         ulList.classList.add("ulList");
+//         divResult.appendChild(divList);
+//         divList.appendChild(ulList);
+//
+//         arr.map((type) => {
+//             const liList = document.createElement("li");
+//             liList.classList.add("liList");
+//             liList.textContent = type;
+//             ulList.appendChild(liList);
+//             // console.log(type);
+//
+//             liList.addEventListener("click", function (e) {
+//                 /*insert the value for the autocomplete text field:*/
+//                 divResult.removeChild(divList);
+//                 main.innerHTML = "";
+//                 inp.value = "";
+//                 inp.value = e.target.textContent;
+//                 tag.textContent = e.target.textContent;
+//                 tag.classList.add("tag-actived");
+//                 btn.classList.toggle("btn-actived");
+//                 divResult.classList.toggle("divResult-actived");
+//                 inp.classList.toggle("searchInput-actived");
+//
+//                 tagClose(tag, inp, btn);
+//
+//                 if (inp.id === "searchIngredient") {
+//                     getAllOptions.push(inp.value);
+//                     // searchIngredients(inp);
+//                 }
+//                 if (inp.id === "searchAppareil") {
+//                     getAllOptions.push(inp.value);
+//                     // searchAppareils(inp);
+//                 }
+//                 if (inp.id === "searchUstensile") {
+//                     getAllOptions.push(inp.value);
+//                     // searchUstensiles(inp);
+//                 }
+//                 console.log(getAllOptions);
+//
+//                 let resultAllDatas = Object.entries(getAllOptions).map(([id, set]) => [id, [...set]]);
+//
+//                 let showResult = [];
+//                 resultAllDatas[0][1].filter((resultSearch) => {
+//                     recette.filter((type) => {
+//                         if (type.name.toLowerCase().includes(resultSearch.toLowerCase())) {
+//                             showResult.push(type.name);
+//                         }
+//                         type.ingredients.filter((ingredients) => {
+//                             if (ingredients.ingredient.toLowerCase().includes(resultSearch.toLowerCase())) {
+//                                 showResult.push(type.name);
+//                             }
+//                         })
+//                         if (type.appliance.toLowerCase().includes(resultSearch.toLowerCase())) {
+//                             showResult.push(type.name);
+//                         }
+//                         type.ustensils.filter((ustensil) => {
+//                             if (ustensil.includes(resultSearch.toLowerCase())) {
+//                                 showResult.push(type.name);
+//                             }
+//                         })
+//                     })
+//                 })
+//
+//                 console.log(showResult);
+//
+//                 let arrayNoSort = [...new Set(showResult)];
+//                 let arraySort = arrayNoSort.sort();
+//                 console.log(arraySort)
+//
+//                 arraySort.map((name) => {
+//                     recette
+//                         .filter((type) => {
+//                             if (type.name === name) {
+//                                 new Recette(type, main);
+//                             }
+//                         })
+//                 })
+//
+//                 // let arrayNoSort = [...new Set(showResult)];
+//                 // // let arraySort = arrayNoSort.sort();
+//                 // console.log(arrayNoSort);
+//                 // let arrayNoSort = [];
+//                 // showResult.map((name) => {
+//                 //     recette
+//                 //         .filter((type) => {
+//                 //             // if (type.name === name) {
+//                 //             //     new Recette(type, main);
+//                 //             // }
+//                 //             type.ingredients.map((ingredients) => {
+//                 //                 if (ingredients.ingredient === name) {
+//                 //                     arrayNoSort.push(type.name);
+//                 //                     // new Recette(type, main);
+//                 //                 }
+//                 //             })
+//                 //
+//                 //             if (type.appliance === name) {
+//                 //                 arrayNoSort.push(type.name);
+//                 //                 if (arrayNoSort.length < 1){
+//                 //
+//                 //                 }
+//                 //                 // new Recette(type, main);
+//                 //             }
+//                 //
+//                 //             type.ustensils.map((ustensil) => {
+//                 //                 if (ustensil === name) {
+//                 //                     arrayNoSort.push(type.name);
+//                 //                     // new Recette(type, main);
+//                 //                 }
+//                 //             })
+//                 //         })
+//                 // })
+//                 //
+//                 // console.log(arrayNoSort);
+//                 // console.log(arrayNoSort.filter((item, index) => arrayNoSort.indexOf(item) !== index));
+//
+//
+//             })
+//         })
+//
+//     })
+//
+//     closeFilter.addEventListener("click", (e) => {
+//         closeSearch(closeFilter, btn, divResult);
+//     })
+//
+// }
+// const searchIngredients = (inp) => {
+//     recette.filter((type) => {
+//         type.ingredients.map((ingredients) => {
+//             if (ingredients.ingredient.includes(inp.value)) {
+//                 new Recette(type, main);
+//             }
+//         })
+//     })
+// }
+// const searchAppareils = (inp) => {
+//     recette.filter((type) => {
+//         if (type.appliance.includes(inp.value)) {
+//             new Recette(type, main);
+//         }
+//     })
+// }
+// const searchUstensiles = (inp) => {
+//     recette.filter((type) => {
+//         type.ustensils.map((ustensil) => {
+//             if (ustensil.includes(inp.value)) {
+//                 new Recette(type, main);
+//             }
+//         })
+//     })
+// }
 
 const closeSearch = (closeFilter, btn, divResult) => {
     btn.classList.toggle("btn-actived");
@@ -440,6 +434,19 @@ const closeSearch = (closeFilter, btn, divResult) => {
 }
 const tagClose = (tag, inp) => {
     tag.addEventListener("click", function (e) {
+        if (tag.id === "tagIngredient") {
+            showResult.splice(showResult.indexOf(e.target.textContent), 1);
+            // searchIngredients(inp);
+        }
+        if (tag.id === "tagAppareil") {
+            showResult.splice(showResult.indexOf(e.target.textContent), 1);
+            // searchAppareils(inp);
+        }
+        if (tag.id === "tagUstensile") {
+            showResult.splice(showResult.indexOf(e.target.textContent), 1);
+            // searchUstensiles(inp);
+        }
+        console.log(showResult);
         tag.textContent = "";
         tag.classList.remove("tag-actived");
         inp.value = "";
@@ -451,6 +458,6 @@ const tagClose = (tag, inp) => {
     })
 }
 
-clickType(btnIngredient, searchIngredient, resultRes[0][1].sort(), resultIngredient, tagIngredient, closeIngredientsFilter);
-clickType(btnAppareil, searchAppareil, resultRes[1][1].sort(), resultAppareil, tagAppareil, closeAppareilsFilter);
-clickType(btnUstensile, searchUstensile, resultRes[2][1].sort(), resultUstensile, tagUstensile, closeUstensilesFilter);
+// clickType(btnIngredient, searchIngredient, resultRes[0][1].sort(), resultIngredient, tagIngredient, closeIngredientsFilter);
+// clickType(btnAppareil, searchAppareil, resultRes[1][1].sort(), resultAppareil, tagAppareil, closeAppareilsFilter);
+// clickType(btnUstensile, searchUstensile, resultRes[2][1].sort(), resultUstensile, tagUstensile, closeUstensilesFilter);

@@ -335,3 +335,17 @@ body {
 .tag-actived {
   display: flex;
 }
+
+
+/* barre de recherche principale */
+#search{
+  border-right-style: none;
+}
+.input-group-prepend {
+  border: 1px solid #ced4da;
+  border-left-style: none;
+}
+#basic-addon1 {
+  background-color: white;
+  border-style: none;
+}
