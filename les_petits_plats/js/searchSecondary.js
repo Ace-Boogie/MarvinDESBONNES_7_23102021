@@ -2,28 +2,20 @@ import recipe from "./utilities/recipes.js";
 import Recette from "./recette";
 
 const recette = recipe;
+const main = document.querySelector('#app');
 
 let getAllOptions = [];
 let showResultOption = [];
 let arrayOptions = [];
 
+let recetteFilter;
+let recetteFilterTag;
+let accumulateFilterRecette = recette;
 /* Récupation des datas pour les inputs annexes */
-
-const res = Object.fromEntries(['ingredients', 'appliances', 'ustensils'].map((id) => [id, new Set()]));
-recette.map((type) => {
-    type.ingredients.map((ingredients) => {
-        res.ingredients.add(ingredients.ingredient);
-    })
-    res.appliances.add(type.appliance);
-    type.ustensils.map((ustensil) => {
-        res.ustensils.add(ustensil);
-    })
-})
-const resultRes = Object.entries(res).map(([id, set]) => [id, [...set]]);
 
 export default class SearchSecondary {
 
-    checkBtnActived(btn, result, search, arr, tag) {
+    checkBtnActived(btn, result, search, arr, tag ) {
         if (btn.classList.contains("btn-actived")) {
             btn.classList.toggle("btn-actived");
             result.classList.toggle("divResult-actived");
@@ -31,6 +23,7 @@ export default class SearchSecondary {
         }
 
         this.addClassListActived(btn, result, search, arr, tag);
+
     }
 
     addClassListActived(btn, result, search, arr, tag) {
@@ -44,8 +37,8 @@ export default class SearchSecondary {
         result.appendChild(divList);
         divList.appendChild(ulList);
 
+        this.addListResult(btn, result, search, arr, tag, ulList, divList);
 
-        this.addListResult(btn, result, search, arr, tag, ulList, divList)
     }
 
     addListResult(btn, result, search, arr, tag, ulList, divList) {
@@ -74,88 +67,95 @@ export default class SearchSecondary {
         result.classList.toggle("divResult-actived");
         search.classList.toggle("searchInput-actived");
 
-        this.addGetAllOptions(search);
+        this.addGetAllOptions(search, tag);
 
         this.tagClose(btn, search, tag, showResultOption);
 
     }
 
-    addGetAllOptions(search) {
+    addGetAllOptions(search, tag) {
         if (search.id === "searchIngredient") {
-            getAllOptions.push(search.value);
+            getAllOptions.push({type: search.id, option: search.value});
+            showResultOption.push({type: tag.id, option: tag.textContent});
+            console.log({type: tag.id, option: tag.textContent})
         }
         if (search.id === "searchAppareil") {
-            getAllOptions.push(search.value);
+            getAllOptions.push({type: search.id, option: search.value});
+            showResultOption.push(tag.textContent);
         }
         if (search.id === "searchUstensile") {
-            getAllOptions.push(search.value);
+            getAllOptions.push({type: search.id, option: search.value});
+            showResultOption.push(tag.textContent);
         }
+
         console.log(getAllOptions);
 
-        let resultAllDatas = Object.entries(getAllOptions).map(([id, set]) => [id, [...set]]);
-
-        // resultRes.filter((resultSearch) => {
-            recette.filter((type) => {
-                console.log(search.value);
-                type.ingredients.filter((ingredients) => {
-                    if (ingredients.ingredient.toLowerCase().includes(search.value.toLowerCase())) {
-                        showResultOption.push(type.name);
-                    }
-                })
-                if (type.appliance.toLowerCase().includes(search.value.toLowerCase())) {
-                    showResultOption.push(type.name);
+        getAllOptions.forEach((options) => {
+            recetteFilter = accumulateFilterRecette.filter((filterRecette) => {
+                if (options.type === "searchIngredient") {
+                    return filterRecette.ingredients.find(item => item.ingredient === options.option);
                 }
-                type.ustensils.filter((ustensil) => {
-                    if (ustensil.includes(search.value.toLowerCase())) {
-                        showResultOption.push(type.name);
-                    }
-                })
+                if (options.type === "searchAppareil") {
+                    return filterRecette.appliance === options.option;
+                }
+                if (options.type === "searchUstensile") {
+                    return filterRecette.ustensils.find(item => item === options.option);
+                }
             })
-        // })
 
-        console.log(showResultOption);
-
-        let arrayNoSort = [...new Set(showResultOption)];
-        let arraySort = arrayNoSort.sort();
-        console.log(arraySort)
-
-        arraySort.map((name) => {
-            recette
-                .filter((type) => {
-                    if (type.name === name) {
-                        new Recette(type, document.querySelector("#app"));
-                    }
-                })
+            accumulateFilterRecette = recetteFilter;
         })
-    }
 
-    closeSearch(closeFilter, btn, divResult) {
-        btn.classList.toggle("btn-actived");
-        divResult.classList.toggle("divResult-actived");
+
+        recetteFilter.map((ele) => {
+            new Recette(ele, main);
+        })
     }
 
     tagClose(btn, search, tag, showResultOption) {
         tag.addEventListener("click", function (e) {
             if (tag.id === "tagIngredient") {
-                showResultOption.splice(showResultOption.indexOf(e.target.textContent), 1);
+                console.log(showResultOption.indexOf(tag.id))
+                // showResultOption.splice(showResultOption.indexOf(e.target.textContent), 1);
+                // getAllOptions.splice(getAllOptions.indexOf({type: search.id, option : search.value}), 1);
                 // searchIngredients(inp);
             }
             if (tag.id === "tagAppareil") {
                 showResultOption.splice(showResultOption.indexOf(e.target.textContent), 1);
+                // getAllOptions.splice(getAllOptions.indexOf({type: search.id, option : search.value}), 1);
                 // searchAppareils(inp);
             }
             if (tag.id === "tagUstensile") {
                 showResultOption.splice(showResultOption.indexOf(e.target.textContent), 1);
+                // getAllOptions.splice(getAllOptions.indexOf({type: search.id, option : search.value}), 1);
                 // searchUstensiles(inp);
             }
             // console.log(showResult);
-            tag.textContent = "";
+            // tag.textContent = "";
             tag.classList.remove("tag-actived");
-            search.value = "";
+            // search.value = "";
 
-            document.querySelector("#app").innerHTML = "";
-            recette.map((ele) => {
-                new Recette(ele, document.querySelector("#app"));
+            console.log(showResultOption);
+            showResultOption.forEach((option) => {
+                recetteFilterTag = accumulateFilterRecette.filter((filterRecette) => {
+                    if (option === tag.textContent) {
+                        console.log("ok il y a un ingredient")
+                        return filterRecette.ingredients.find(item => item.ingredient === option);
+                    }
+                    if (option === tag.textContent) {
+                        return filterRecette.appliance === option;
+                    }
+                    if (option === tag.textContent) {
+                        return filterRecette.ustensils.find(item => item === option);
+                    }
+                })
+
+                accumulateFilterRecette = recetteFilterTag;
+            })
+
+
+            recetteFilterTag.map((ele) => {
+                new Recette(ele, main);
             })
         })
     }
