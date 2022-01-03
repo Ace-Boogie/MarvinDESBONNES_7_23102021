@@ -5,17 +5,20 @@ const recette = recipe;
 const main = document.querySelector('#app');
 
 let getAllOptions = [];
-let showResultOption = [];
+let tagArray = [];
 let arrayOptions = [];
 
 let recetteFilter;
 let recetteFilterTag;
+let filterViaTag;
+let indexArrayGetAllOptions;
 let accumulateFilterRecette = recette;
+let accumulateFilterRecette2 = recette;
 /* Récupation des datas pour les inputs annexes */
 
 export default class SearchSecondary {
 
-    checkBtnActived(btn, result, search, arr, tag ) {
+    checkBtnActived(btn, result, search, arr, tag) {
         if (btn.classList.contains("btn-actived")) {
             btn.classList.toggle("btn-actived");
             result.classList.toggle("divResult-actived");
@@ -58,7 +61,7 @@ export default class SearchSecondary {
 
     clickOnLiList(btn, result, search, arr, tag, ulList, divList, e) {
         result.removeChild(divList);
-        document.querySelector('#app').innerHTML = "";
+        main.innerHTML = "";
         search.value = "";
         search.value = e.target.textContent;
         tag.textContent = e.target.textContent;
@@ -69,27 +72,11 @@ export default class SearchSecondary {
 
         this.addGetAllOptions(search, tag);
 
-        this.tagClose(btn, search, tag, showResultOption);
+        this.tagClose(btn, search, tag);
 
     }
 
-    addGetAllOptions(search, tag) {
-        if (search.id === "searchIngredient") {
-            getAllOptions.push({type: search.id, option: search.value});
-            showResultOption.push({type: tag.id, option: tag.textContent});
-            console.log({type: tag.id, option: tag.textContent})
-        }
-        if (search.id === "searchAppareil") {
-            getAllOptions.push({type: search.id, option: search.value});
-            showResultOption.push(tag.textContent);
-        }
-        if (search.id === "searchUstensile") {
-            getAllOptions.push({type: search.id, option: search.value});
-            showResultOption.push(tag.textContent);
-        }
-
-        console.log(getAllOptions);
-
+    showRecetteWithOption() {
         getAllOptions.forEach((options) => {
             recetteFilter = accumulateFilterRecette.filter((filterRecette) => {
                 if (options.type === "searchIngredient") {
@@ -112,51 +99,135 @@ export default class SearchSecondary {
         })
     }
 
-    tagClose(btn, search, tag, showResultOption) {
-        tag.addEventListener("click", function (e) {
-            if (tag.id === "tagIngredient") {
-                console.log(showResultOption.indexOf(tag.id))
-                // showResultOption.splice(showResultOption.indexOf(e.target.textContent), 1);
-                // getAllOptions.splice(getAllOptions.indexOf({type: search.id, option : search.value}), 1);
-                // searchIngredients(inp);
-            }
-            if (tag.id === "tagAppareil") {
-                showResultOption.splice(showResultOption.indexOf(e.target.textContent), 1);
-                // getAllOptions.splice(getAllOptions.indexOf({type: search.id, option : search.value}), 1);
-                // searchAppareils(inp);
-            }
-            if (tag.id === "tagUstensile") {
-                showResultOption.splice(showResultOption.indexOf(e.target.textContent), 1);
-                // getAllOptions.splice(getAllOptions.indexOf({type: search.id, option : search.value}), 1);
-                // searchUstensiles(inp);
-            }
-            // console.log(showResult);
-            // tag.textContent = "";
-            tag.classList.remove("tag-actived");
-            // search.value = "";
+    addGetAllOptions(search, tag) {
+        if (getAllOptions.length === 0) {
+            main.innerHTML = "";
+        }
+        if (search.id === "searchIngredient") {
+            getAllOptions.push({type: search.id, option: search.value});
+            // tagArray.push({type: tag.id, option: tag.textContent});
+        }
+        if (search.id === "searchAppareil") {
+            getAllOptions.push({type: search.id, option: search.value});
+            // tagArray.push({type: tag.id, option: tag.textContent});
+        }
+        if (search.id === "searchUstensile") {
+            getAllOptions.push({type: search.id, option: search.value});
+            // tagArray.push({type: tag.id, option: tag.textContent});
+        }
 
-            console.log(showResultOption);
-            showResultOption.forEach((option) => {
-                recetteFilterTag = accumulateFilterRecette.filter((filterRecette) => {
-                    if (option === tag.textContent) {
-                        console.log("ok il y a un ingredient")
-                        return filterRecette.ingredients.find(item => item.ingredient === option);
-                    }
-                    if (option === tag.textContent) {
-                        return filterRecette.appliance === option;
-                    }
-                    if (option === tag.textContent) {
-                        return filterRecette.ustensils.find(item => item === option);
-                    }
+        console.log(getAllOptions);
+
+        this.showRecetteWithOption();
+    }
+
+    /* getAllOptions.filter(!tag.id) faire un return retourne un élément avec filter dont l'id est différent de l'élément sélectionné */
+    tagClose(btn, search, tag) {
+        tag.addEventListener("click", function (e) {
+            // const newGetAllOptions = getAllOptions.filter((item) => item.option !== tag.textContent)
+
+            const deleteOptionMethod = getAllOptions.findIndex((options, index) => {
+                if (options.option === tag.textContent) {
+                    indexArrayGetAllOptions = index;
+                    console.log(indexArrayGetAllOptions);
+                }
+            })
+
+            const deleteOptionInArray = getAllOptions.splice(indexArrayGetAllOptions, 1);
+
+            if (tag.id === "tagIngredient") {
+                deleteOptionMethod;
+                deleteOptionInArray;
+                tag.classList.remove("tag-actived");
+                console.log("ingredient")
+                getAllOptions.forEach((options) => {
+                    filterViaTag = accumulateFilterRecette2.filter((filterRecette) => {
+                        if (options.type === "searchIngredient") {
+                            return filterRecette.ingredients.find(item => item.ingredient === options.option);
+                        }
+                        if (options.type === "searchAppareil") {
+                            return filterRecette.appliance === options.option;
+                        }
+                        if (options.type === "searchUstensile") {
+                            return filterRecette.ustensils.find(item => item === options.option);
+                        }
+                    })
                 })
 
-                accumulateFilterRecette = recetteFilterTag;
-            })
+                    accumulateFilterRecette2 = filterViaTag;
+                    main.innerHTML = "";
+                    filterViaTag.map((ele) => {
+                        new Recette(ele, main);
+                    })
+            }
+            if (tag.id === "tagAppareil") {
+                deleteOptionMethod;
+                deleteOptionInArray;
+                tag.classList.remove("tag-actived");
+                console.log("appareil")
+                getAllOptions.forEach((options) => {
+                    filterViaTag = accumulateFilterRecette2.filter((filterRecette) => {
+                        if (options.type === "searchIngredient") {
+                            return filterRecette.ingredients.find(item => item.ingredient === options.option);
+                        }
+                        if (options.type === "searchAppareil") {
+                            return filterRecette.appliance === options.option;
+                        }
+                        if (options.type === "searchUstensile") {
+                            return filterRecette.ustensils.find(item => item === options.option);
+                        }
+                    })
+                    accumulateFilterRecette2 = filterViaTag;
+                    main.innerHTML = "";
+                    filterViaTag.map((ele) => {
+                        new Recette(ele, main);
+                    })
 
+                })
+            }
+            if (tag.id === "tagUstensile") {
+                deleteOptionMethod;
+                deleteOptionInArray;
+                tag.classList.remove("tag-actived");
+                console.log("ustensile")
+                getAllOptions.forEach((options) => {
+                    filterViaTag = accumulateFilterRecette2.filter((filterRecette) => {
+                        if (options.type === "searchIngredient") {
+                            return filterRecette.ingredients.find(item => item.ingredient === options.option);
+                        }
+                        if (options.type === "searchAppareil") {
+                            return filterRecette.appliance === options.option;
+                        }
+                        if (options.type === "searchUstensile") {
+                            return filterRecette.ustensils.find(item => item === options.option);
+                        }
+                    })
+                    accumulateFilterRecette2 = filterViaTag;
+                    main.innerHTML = "";
+                    filterViaTag.map((ele) => {
+                        new Recette(ele, main);
+                    })
 
-            recetteFilterTag.map((ele) => {
-                new Recette(ele, main);
-            })
+                })
+            }
+
+            if (getAllOptions.length === 0) {
+                main.innerHTML = "";
+                console.log("0 personne")
+                recette.map((ele) => {
+                    new Recette(ele, main);
+                })
+            }
         })
+    }
+
+    deleteOptionInArray(tag) {
+        getAllOptions.findIndex((options, index) => {
+            if (options.option === tag.textContent) {
+                indexArrayGetAllOptions = index;
+            }
+        })
+
+        getAllOptions.splice(indexArrayGetAllOptions, 1);
     }
 }
