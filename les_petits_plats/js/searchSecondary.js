@@ -164,7 +164,7 @@ export default class SearchSecondary {
                     })
 
                     accumulateFilterRecette2 = filterViaTag;
-                    // main.innerHTML = "";
+                    main.innerHTML = "";
                     filterViaTag.map((ele) => {
                         new Recette(ele, main);
                     })
@@ -187,7 +187,7 @@ export default class SearchSecondary {
                             }
                         })
                         accumulateFilterRecette2 = filterViaTag;
-                        // main.innerHTML = "";
+                        main.innerHTML = "";
                         filterViaTag.map((ele) => {
                             new Recette(ele, main);
                         })
@@ -212,7 +212,7 @@ export default class SearchSecondary {
                             }
                         })
                         accumulateFilterRecette2 = filterViaTag;
-                        // main.innerHTML = "";
+                        main.innerHTML = "";
                         filterViaTag.map((ele) => {
                             new Recette(ele, main);
                         })
