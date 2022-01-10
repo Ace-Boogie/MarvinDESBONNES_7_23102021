@@ -159,5 +159,4 @@ const closeSearch = (e, btn, result, search) => {
     btn.classList.toggle("btn-actived");
     result.classList.toggle("divResult-actived");
     search.classList.toggle("searchInput-actived");
-    // search.classList.toggle("searchInput-actived");
 }

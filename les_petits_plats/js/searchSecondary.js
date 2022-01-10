@@ -57,6 +57,12 @@ export default class SearchSecondary {
             });
 
         })
+
+        console.log(getAllOptions.length);
+        console.log(getAllOptions);
+        if (getAllOptions === null){
+            console.log("personne")
+        }
     }
 
     clickOnLiList(btn, result, search, arr, tag, ulList, divList, e) {
@@ -76,49 +82,51 @@ export default class SearchSecondary {
 
     }
 
-    showRecetteWithOption() {
-        getAllOptions.forEach((options) => {
-            recetteFilter = accumulateFilterRecette.filter((filterRecette) => {
-                if (options.type === "searchIngredient") {
-                    return filterRecette.ingredients.find(item => item.ingredient === options.option);
-                }
-                if (options.type === "searchAppareil") {
-                    return filterRecette.appliance === options.option;
-                }
-                if (options.type === "searchUstensile") {
-                    return filterRecette.ustensils.find(item => item === options.option);
-                }
-            })
+    addGetAllOptions(search) {
+        // if (getAllOptions.length === 0) {
+        //     main.innerHTML = "";
+        // }
 
-            accumulateFilterRecette = recetteFilter;
-        })
-
-
-        recetteFilter.map((ele) => {
-            new Recette(ele, main);
-        })
-    }
-
-    addGetAllOptions(search, tag) {
-        if (getAllOptions.length === 0) {
-            main.innerHTML = "";
-        }
+        const pushSearch = getAllOptions.push({type: search.id, option: search.value});
         if (search.id === "searchIngredient") {
-            getAllOptions.push({type: search.id, option: search.value});
-            // tagArray.push({type: tag.id, option: tag.textContent});
+            pushSearch;
         }
         if (search.id === "searchAppareil") {
-            getAllOptions.push({type: search.id, option: search.value});
-            // tagArray.push({type: tag.id, option: tag.textContent});
+            pushSearch;
         }
         if (search.id === "searchUstensile") {
-            getAllOptions.push({type: search.id, option: search.value});
-            // tagArray.push({type: tag.id, option: tag.textContent});
+            pushSearch;
+
         }
 
         console.log(getAllOptions);
 
         this.showRecetteWithOption();
+    }
+
+    showRecetteWithOption() {
+
+            getAllOptions.forEach((options) => {
+                console.log(options);
+                recetteFilter = accumulateFilterRecette.filter((filterRecette) => {
+                    if (options.type === "searchIngredient") {
+                        return filterRecette.ingredients.find(item => item.ingredient === options.option);
+                    }
+                    if (options.type === "searchAppareil") {
+                        return filterRecette.appliance === options.option;
+                    }
+                    if (options.type === "searchUstensile") {
+                        return filterRecette.ustensils.find(item => item === options.option);
+                    }
+                })
+
+                accumulateFilterRecette = recetteFilter;
+            })
+
+
+            recetteFilter.map((ele) => {
+                new Recette(ele, main);
+            })
     }
 
     /* getAllOptions.filter(!tag.id) faire un return retourne un élément avec filter dont l'id est différent de l'élément sélectionné */
@@ -134,90 +142,93 @@ export default class SearchSecondary {
             })
 
             const deleteOptionInArray = getAllOptions.splice(indexArrayGetAllOptions, 1);
+            // if (getAllOptions.length > 0) {
 
-            if (tag.id === "tagIngredient") {
-                deleteOptionMethod;
-                deleteOptionInArray;
-                tag.classList.remove("tag-actived");
-                console.log("ingredient")
-                getAllOptions.forEach((options) => {
-                    filterViaTag = accumulateFilterRecette2.filter((filterRecette) => {
-                        if (options.type === "searchIngredient") {
-                            return filterRecette.ingredients.find(item => item.ingredient === options.option);
-                        }
-                        if (options.type === "searchAppareil") {
-                            return filterRecette.appliance === options.option;
-                        }
-                        if (options.type === "searchUstensile") {
-                            return filterRecette.ustensils.find(item => item === options.option);
-                        }
+                if (tag.id === "tagIngredient") {
+                    deleteOptionMethod;
+                    deleteOptionInArray;
+                    tag.classList.remove("tag-actived");
+                    console.log("ingredient")
+                    getAllOptions.forEach((options) => {
+                        filterViaTag = accumulateFilterRecette2.filter((filterRecette) => {
+                            if (options.type === "searchIngredient") {
+                                return filterRecette.ingredients.find(item => item.ingredient === options.option);
+                            }
+                            if (options.type === "searchAppareil") {
+                                return filterRecette.appliance === options.option;
+                            }
+                            if (options.type === "searchUstensile") {
+                                return filterRecette.ustensils.find(item => item === options.option);
+                            }
+                        })
                     })
-                })
 
                     accumulateFilterRecette2 = filterViaTag;
-                    main.innerHTML = "";
+                    // main.innerHTML = "";
                     filterViaTag.map((ele) => {
                         new Recette(ele, main);
                     })
-            }
-            if (tag.id === "tagAppareil") {
-                deleteOptionMethod;
-                deleteOptionInArray;
-                tag.classList.remove("tag-actived");
-                console.log("appareil")
-                getAllOptions.forEach((options) => {
-                    filterViaTag = accumulateFilterRecette2.filter((filterRecette) => {
-                        if (options.type === "searchIngredient") {
-                            return filterRecette.ingredients.find(item => item.ingredient === options.option);
-                        }
-                        if (options.type === "searchAppareil") {
-                            return filterRecette.appliance === options.option;
-                        }
-                        if (options.type === "searchUstensile") {
-                            return filterRecette.ustensils.find(item => item === options.option);
-                        }
-                    })
-                    accumulateFilterRecette2 = filterViaTag;
-                    main.innerHTML = "";
-                    filterViaTag.map((ele) => {
-                        new Recette(ele, main);
-                    })
+                }
+                if (tag.id === "tagAppareil") {
+                    deleteOptionMethod;
+                    deleteOptionInArray;
+                    tag.classList.remove("tag-actived");
+                    console.log("appareil")
+                    getAllOptions.forEach((options) => {
+                        filterViaTag = accumulateFilterRecette2.filter((filterRecette) => {
+                            if (options.type === "searchIngredient") {
+                                return filterRecette.ingredients.find(item => item.ingredient === options.option);
+                            }
+                            if (options.type === "searchAppareil") {
+                                return filterRecette.appliance === options.option;
+                            }
+                            if (options.type === "searchUstensile") {
+                                return filterRecette.ustensils.find(item => item === options.option);
+                            }
+                        })
+                        accumulateFilterRecette2 = filterViaTag;
+                        // main.innerHTML = "";
+                        filterViaTag.map((ele) => {
+                            new Recette(ele, main);
+                        })
 
-                })
-            }
-            if (tag.id === "tagUstensile") {
-                deleteOptionMethod;
-                deleteOptionInArray;
-                tag.classList.remove("tag-actived");
-                console.log("ustensile")
-                getAllOptions.forEach((options) => {
-                    filterViaTag = accumulateFilterRecette2.filter((filterRecette) => {
-                        if (options.type === "searchIngredient") {
-                            return filterRecette.ingredients.find(item => item.ingredient === options.option);
-                        }
-                        if (options.type === "searchAppareil") {
-                            return filterRecette.appliance === options.option;
-                        }
-                        if (options.type === "searchUstensile") {
-                            return filterRecette.ustensils.find(item => item === options.option);
-                        }
                     })
-                    accumulateFilterRecette2 = filterViaTag;
-                    main.innerHTML = "";
-                    filterViaTag.map((ele) => {
-                        new Recette(ele, main);
+                }
+                if (tag.id === "tagUstensile") {
+                    deleteOptionMethod;
+                    deleteOptionInArray;
+                    tag.classList.remove("tag-actived");
+                    console.log("ustensile")
+                    getAllOptions.forEach((options) => {
+                        filterViaTag = accumulateFilterRecette2.filter((filterRecette) => {
+                            if (options.type === "searchIngredient") {
+                                return filterRecette.ingredients.find(item => item.ingredient === options.option);
+                            }
+                            if (options.type === "searchAppareil") {
+                                return filterRecette.appliance === options.option;
+                            }
+                            if (options.type === "searchUstensile") {
+                                return filterRecette.ustensils.find(item => item === options.option);
+                            }
+                        })
+                        accumulateFilterRecette2 = filterViaTag;
+                        // main.innerHTML = "";
+                        filterViaTag.map((ele) => {
+                            new Recette(ele, main);
+                        })
+
                     })
-
-                })
-            }
-
-            if (getAllOptions.length === 0) {
-                main.innerHTML = "";
-                console.log("0 personne")
-                recette.map((ele) => {
-                    new Recette(ele, main);
-                })
-            }
+                }
+                if (getAllOptions === []){
+                    console.log("personne")
+                }
+            // } else {
+            //     main.innerHTML = "";
+            //     console.log("0 personne")
+            //     recette.map((ele) => {
+            //         new Recette(ele, main);
+            //     })
+            // }
         })
     }
 
