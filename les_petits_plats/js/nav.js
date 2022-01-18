@@ -21,9 +21,9 @@ document.querySelector("#nav").innerHTML = `
 </div>
 
 <section class="tagShow">
-<span id="tagIngredient" class="tagIngredient"></span>
-<span id="tagAppareil" class="tagAppareil"></span>
-<span id="tagUstensile" class="tagUstensile"></span>
+<!--<span id="tagIngredient" class="tagIngredient"></span>-->
+<!--<span id="tagAppareil" class="tagAppareil"></span>-->
+<!--<span id="tagUstensile" class="tagUstensile"></span>-->
 </section>
 
 <div id="divFilter">
@@ -107,7 +107,7 @@ const resultRes = Object.entries(res).map(([id, set]) => [id, [...set]]);
 
 /* Choix des options pour afficher la ou les recettes */
 btnIngredient.addEventListener("click", function (e) {
-    searchSecondary.checkBtnActived(btnIngredient, resultIngredient, searchIngredient, resultRes[0][1].sort(), tagIngredient);
+    searchSecondary.checkBtnActived(btnIngredient, resultIngredient, searchIngredient, resultRes[0][1].sort());
 
     /* Désactive une option si celle-ci est actived */
     if (btnAppareil.classList.contains("btn-actived")) {
@@ -119,7 +119,7 @@ btnIngredient.addEventListener("click", function (e) {
 })
 
 btnAppareil.addEventListener("click", function (e) {
-    searchSecondary.checkBtnActived(btnAppareil, resultAppareil, searchAppareil, resultRes[1][1].sort(), tagAppareil);
+    searchSecondary.checkBtnActived(btnAppareil, resultAppareil, searchAppareil, resultRes[1][1].sort());
 
     /* Désactive une option si celle-ci est actived */
     if (btnIngredient.classList.contains("btn-actived")) {
@@ -131,7 +131,7 @@ btnAppareil.addEventListener("click", function (e) {
 })
 
 btnUstensile.addEventListener("click", function (e) {
-    searchSecondary.checkBtnActived(btnUstensile, resultUstensile, searchUstensile, resultRes[2][1].sort(), tagUstensile);
+    searchSecondary.checkBtnActived(btnUstensile, resultUstensile, searchUstensile, resultRes[2][1].sort());
 
     /* Désactive une option si celle-ci est actived */
     if (btnIngredient.classList.contains("btn-actived")) {

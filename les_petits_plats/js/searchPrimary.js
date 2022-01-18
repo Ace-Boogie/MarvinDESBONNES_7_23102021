@@ -1,9 +1,11 @@
 import recipe from "./utilities/recipes.js";
 import Recette from "./recette";
+import SearchSecondary from "./searchSecondary";
 
 const main = document.querySelector('#app');
 const recette = recipe;
 const searchInput = document.querySelector("#search");
+const searchSecondary = new SearchSecondary();
 let searchTerm = "";
 let showResult = [];
 
@@ -14,7 +16,6 @@ export default class SearchPrimary {
 
     searchEvent(e){
         searchTerm = e.target.value;
-            console.log(searchTerm);
             if (searchTerm.length > 2) {
                 main.innerHTML = "";
                 this.filterVersion();
@@ -23,9 +24,10 @@ export default class SearchPrimary {
             }
             else {
                 main.innerHTML = "";
-                recette.map((ele) => {
-                    new Recette(ele, main);
-                })
+                searchSecondary.showRecetteWithOption();
+                // recette.map((ele) => {
+                //     new Recette(ele, main);
+                // })
             }
     }
 

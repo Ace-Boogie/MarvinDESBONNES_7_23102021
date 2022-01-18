@@ -1,19 +1,14 @@
 import recipe from "./utilities/recipes.js";
 import Recette from "./recette";
+import SearchPrimary from "./searchPrimary";
 
 const recette = recipe;
 const main = document.querySelector('#app');
 
 let getAllOptions = [];
-let tagArray = [];
-let arrayOptions = [];
-
 let recetteFilter;
-let recetteFilterTag;
-let filterViaTag;
-let indexArrayGetAllOptions;
-let accumulateFilterRecette = recette;
-let accumulateFilterRecette2 = recette;
+let searchTerm = "";
+let showResult = [];
 /* Récupation des datas pour les inputs annexes */
 
 export default class SearchSecondary {
@@ -57,12 +52,6 @@ export default class SearchSecondary {
             });
 
         })
-
-        console.log(getAllOptions.length);
-        console.log(getAllOptions);
-        if (getAllOptions === null){
-            console.log("personne")
-        }
     }
 
     clickOnLiList(btn, result, search, arr, tag, ulList, divList, e) {
@@ -70,175 +59,82 @@ export default class SearchSecondary {
         main.innerHTML = "";
         search.value = "";
         search.value = e.target.textContent;
-        tag.textContent = e.target.textContent;
-        tag.classList.add("tag-actived");
+        if (search.id === "searchIngredient") {
+            this.addTag("tagIngredient", e);
+        }
+        if (search.id === "searchAppareil") {
+            this.addTag("tagAppareil", e);
+        }
+        if (search.id === "searchUstensile") {
+            this.addTag("tagUstensile", e);
+        }
+
         btn.classList.toggle("btn-actived");
         result.classList.toggle("divResult-actived");
         search.classList.toggle("searchInput-actived");
 
-        this.addGetAllOptions(search, tag);
+        this.addGetAllOptions(search);
 
-        this.tagClose(btn, search, tag);
+        this.tagClose(btn, search);
 
     }
 
     addGetAllOptions(search) {
-        // if (getAllOptions.length === 0) {
-        //     main.innerHTML = "";
-        // }
-
-        const pushSearch = getAllOptions.push({type: search.id, option: search.value});
-        if (search.id === "searchIngredient") {
-            pushSearch;
-        }
-        if (search.id === "searchAppareil") {
-            pushSearch;
-        }
-        if (search.id === "searchUstensile") {
-            pushSearch;
-
-        }
-
+        getAllOptions.push({type: search.id, option: search.value});
         console.log(getAllOptions);
-
         this.showRecetteWithOption();
     }
 
     showRecetteWithOption() {
-
-            getAllOptions.forEach((options) => {
-                console.log(options);
-                recetteFilter = accumulateFilterRecette.filter((filterRecette) => {
-                    if (options.type === "searchIngredient") {
-                        return filterRecette.ingredients.find(item => item.ingredient === options.option);
-                    }
-                    if (options.type === "searchAppareil") {
-                        return filterRecette.appliance === options.option;
-                    }
-                    if (options.type === "searchUstensile") {
-                        return filterRecette.ustensils.find(item => item === options.option);
-                    }
-                })
-
-                accumulateFilterRecette = recetteFilter;
+        let accumulateFilterRecette = recette;
+        getAllOptions.forEach((options) => {
+            recetteFilter = accumulateFilterRecette.filter((filterRecette) => {
+                if (options.type === "searchIngredient") {
+                    return filterRecette.ingredients.find(item => item.ingredient === options.option);
+                }
+                if (options.type === "searchAppareil") {
+                    return filterRecette.appliance === options.option;
+                }
+                if (options.type === "searchUstensile") {
+                    return filterRecette.ustensils.find(item => item === options.option);
+                }
             })
 
+            accumulateFilterRecette = recetteFilter;
+        })
+        if (getAllOptions.length === 0) {
 
+            main.innerHTML = "";
+            recette.map((ele) => {
+                new Recette(ele, main);
+            })
+            // const searchPrimary = new SearchPrimary()
+            // searchPrimary.searchEvent(e);
+        } else {
             recetteFilter.map((ele) => {
                 new Recette(ele, main);
             })
+        }
     }
 
-    /* getAllOptions.filter(!tag.id) faire un return retourne un élément avec filter dont l'id est différent de l'élément sélectionné */
-    tagClose(btn, search, tag) {
-        tag.addEventListener("click", function (e) {
-            // const newGetAllOptions = getAllOptions.filter((item) => item.option !== tag.textContent)
-
-            const deleteOptionMethod = getAllOptions.findIndex((options, index) => {
-                if (options.option === tag.textContent) {
-                    indexArrayGetAllOptions = index;
-                    console.log(indexArrayGetAllOptions);
-                }
+    tagClose() {
+        const tagRemoveArray = document.querySelectorAll("span.tag-actived");
+        let tagRemove;
+        tagRemoveArray.forEach(tag => tagRemove = tag)
+            tagRemove.addEventListener("click", (e) => {
+                tagRemove.textContent = e.target.textContent
+                getAllOptions = getAllOptions.filter((options) => options.option !== tagRemove.textContent)
+                tagRemove.classList.remove("tag-actived");
+                main.innerHTML = "";
+                this.showRecetteWithOption();
             })
-
-            const deleteOptionInArray = getAllOptions.splice(indexArrayGetAllOptions, 1);
-            // if (getAllOptions.length > 0) {
-
-                if (tag.id === "tagIngredient") {
-                    deleteOptionMethod;
-                    deleteOptionInArray;
-                    tag.classList.remove("tag-actived");
-                    console.log("ingredient")
-                    getAllOptions.forEach((options) => {
-                        filterViaTag = accumulateFilterRecette2.filter((filterRecette) => {
-                            if (options.type === "searchIngredient") {
-                                return filterRecette.ingredients.find(item => item.ingredient === options.option);
-                            }
-                            if (options.type === "searchAppareil") {
-                                return filterRecette.appliance === options.option;
-                            }
-                            if (options.type === "searchUstensile") {
-                                return filterRecette.ustensils.find(item => item === options.option);
-                            }
-                        })
-                    })
-
-                    accumulateFilterRecette2 = filterViaTag;
-                    main.innerHTML = "";
-                    filterViaTag.map((ele) => {
-                        new Recette(ele, main);
-                    })
-                }
-                if (tag.id === "tagAppareil") {
-                    deleteOptionMethod;
-                    deleteOptionInArray;
-                    tag.classList.remove("tag-actived");
-                    console.log("appareil")
-                    getAllOptions.forEach((options) => {
-                        filterViaTag = accumulateFilterRecette2.filter((filterRecette) => {
-                            if (options.type === "searchIngredient") {
-                                return filterRecette.ingredients.find(item => item.ingredient === options.option);
-                            }
-                            if (options.type === "searchAppareil") {
-                                return filterRecette.appliance === options.option;
-                            }
-                            if (options.type === "searchUstensile") {
-                                return filterRecette.ustensils.find(item => item === options.option);
-                            }
-                        })
-                        accumulateFilterRecette2 = filterViaTag;
-                        main.innerHTML = "";
-                        filterViaTag.map((ele) => {
-                            new Recette(ele, main);
-                        })
-
-                    })
-                }
-                if (tag.id === "tagUstensile") {
-                    deleteOptionMethod;
-                    deleteOptionInArray;
-                    tag.classList.remove("tag-actived");
-                    console.log("ustensile")
-                    getAllOptions.forEach((options) => {
-                        filterViaTag = accumulateFilterRecette2.filter((filterRecette) => {
-                            if (options.type === "searchIngredient") {
-                                return filterRecette.ingredients.find(item => item.ingredient === options.option);
-                            }
-                            if (options.type === "searchAppareil") {
-                                return filterRecette.appliance === options.option;
-                            }
-                            if (options.type === "searchUstensile") {
-                                return filterRecette.ustensils.find(item => item === options.option);
-                            }
-                        })
-                        accumulateFilterRecette2 = filterViaTag;
-                        main.innerHTML = "";
-                        filterViaTag.map((ele) => {
-                            new Recette(ele, main);
-                        })
-
-                    })
-                }
-                if (getAllOptions === []){
-                    console.log("personne")
-                }
-            // } else {
-            //     main.innerHTML = "";
-            //     console.log("0 personne")
-            //     recette.map((ele) => {
-            //         new Recette(ele, main);
-            //     })
-            // }
-        })
     }
 
-    deleteOptionInArray(tag) {
-        getAllOptions.findIndex((options, index) => {
-            if (options.option === tag.textContent) {
-                indexArrayGetAllOptions = index;
-            }
-        })
-
-        getAllOptions.splice(indexArrayGetAllOptions, 1);
+    addTag(tagType, e){
+        const newTag = document.createElement("span");
+        newTag.textContent = e.target.textContent;
+        newTag.classList.add(tagType, "tag-actived");
+        const tagShow = document.querySelector(".tagShow");
+        tagShow.append(newTag);
     }
 }
