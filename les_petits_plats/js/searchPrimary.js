@@ -4,7 +4,6 @@ import SearchSecondary from "./searchSecondary";
 
 const main = document.querySelector('#app');
 const recette = recipe;
-const searchInput = document.querySelector("#search");
 const searchSecondary = new SearchSecondary();
 let searchTerm = "";
 let showResult = [];
@@ -14,9 +13,12 @@ let resAllDatas = Object.fromEntries(['allDatas'].map((id) => [id, new Set()]));
 
 export default class SearchPrimary {
 
-    searchEvent(e){
-        searchTerm = e.target.value;
+    searchEvent(){
+
+        searchTerm = document.getElementById("search").value;
+
             if (searchTerm.length > 2) {
+
                 main.innerHTML = "";
                 this.filterVersion();
                 this.addResultSearch();

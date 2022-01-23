@@ -105,11 +105,18 @@ export default class SearchSecondary {
         if (getAllOptions.length === 0) {
 
             main.innerHTML = "";
-            recette.map((ele) => {
-                new Recette(ele, main);
-            })
-            // const searchPrimary = new SearchPrimary()
-            // searchPrimary.searchEvent(e);
+
+            searchTerm = document.getElementById("search").value;
+            if (searchTerm.length > 2) {
+                const searchPrimary = new SearchPrimary();
+                searchPrimary.filterVersion();
+                searchPrimary.addResultSearch();
+                searchPrimary.showResultSearch();
+            } else {
+                recette.map((ele) => {
+                    new Recette(ele, main);
+                })
+            }
         } else {
             recetteFilter.map((ele) => {
                 new Recette(ele, main);
@@ -121,16 +128,16 @@ export default class SearchSecondary {
         const tagRemoveArray = document.querySelectorAll("span.tag-actived");
         let tagRemove;
         tagRemoveArray.forEach(tag => tagRemove = tag)
-            tagRemove.addEventListener("click", (e) => {
-                tagRemove.textContent = e.target.textContent
-                getAllOptions = getAllOptions.filter((options) => options.option !== tagRemove.textContent)
-                tagRemove.classList.remove("tag-actived");
-                main.innerHTML = "";
-                this.showRecetteWithOption();
-            })
+        tagRemove.addEventListener("click", (e) => {
+            tagRemove.textContent = e.target.textContent
+            getAllOptions = getAllOptions.filter((options) => options.option !== tagRemove.textContent)
+            tagRemove.classList.remove("tag-actived");
+            main.innerHTML = "";
+            this.showRecetteWithOption();
+        })
     }
 
-    addTag(tagType, e){
+    addTag(tagType, e) {
         const newTag = document.createElement("span");
         newTag.textContent = e.target.textContent;
         newTag.classList.add(tagType, "tag-actived");
