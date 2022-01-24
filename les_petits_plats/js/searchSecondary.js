@@ -102,25 +102,24 @@ export default class SearchSecondary {
 
             accumulateFilterRecette = recetteFilter;
         })
-        if (getAllOptions.length === 0) {
-
+        searchTerm = document.getElementById("search").value;
+        if (searchTerm.length > 2) {
             main.innerHTML = "";
-
-            searchTerm = document.getElementById("search").value;
-            if (searchTerm.length > 2) {
-                const searchPrimary = new SearchPrimary();
-                searchPrimary.filterVersion();
-                searchPrimary.addResultSearch();
-                searchPrimary.showResultSearch();
-            } else {
+            const searchPrimary = new SearchPrimary();
+            searchPrimary.filterVersion();
+            searchPrimary.addResultSearch();
+            searchPrimary.showResultSearch();
+        } else {
+            if (getAllOptions.length === 0) {
+                main.innerHTML = "";
                 recette.map((ele) => {
                     new Recette(ele, main);
                 })
+            } else {
+                recetteFilter.map((ele) => {
+                    new Recette(ele, main);
+                })
             }
-        } else {
-            recetteFilter.map((ele) => {
-                new Recette(ele, main);
-            })
         }
     }
 

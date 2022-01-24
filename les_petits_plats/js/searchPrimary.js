@@ -20,7 +20,7 @@ export default class SearchPrimary {
             if (searchTerm.length > 2) {
 
                 main.innerHTML = "";
-                this.forVersion();
+                this.filterVersion();
                 this.addResultSearch();
                 this.showResultSearch();
             }
